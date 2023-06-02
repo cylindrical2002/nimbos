@@ -7,20 +7,20 @@ GUEST ?= off
 
 # Platform
 ifeq ($(ARCH), x86_64)
-  ACCEL ?= on
-  ifeq ($(RVM), on)
-    PLATFORM ?= pc-rvm
-  else ifeq ($(GUEST), on)
-    PLATFORM ?= rvm-guest-x86_64
-  else
-    PLATFORM ?= pc
-  endif
+    ACCEL ?= on
+    ifeq ($(RVM), on)
+        PLATFORM ?= pc-rvm
+    else ifeq ($(GUEST), on)
+        PLATFORM ?= rvm-guest-x86_64
+    else
+        PLATFORM ?= pc
+    endif
 else ifeq ($(ARCH), aarch64)
-  ACCEL ?= off
-  PLATFORM ?= qemu-virt-arm
+    ACCEL ?= off
+    PLATFORM ?= qemu-virt-arm
 else ifeq ($(ARCH), riscv64)
-  ACCEL ?= off
-  PLATFORM ?= qemu-virt-riscv
+    ACCEL ?= off
+    PLATFORM ?= qemu-virt-riscv
 endif
 
 export ARCH
@@ -39,12 +39,12 @@ kernel_bin := $(kernel_elf).bin
 features := platform-$(PLATFORM)
 
 ifeq ($(RVM), on)
-  features += rvm
+    features += rvm
 endif
 
 build_args := --no-default-features --features "$(features)" --target $(target) -Zbuild-std=core,alloc -Zbuild-std-features=compiler-builtins-mem
 ifeq ($(MODE), release)
-  build_args += --release
+    build_args += --release
 endif
 
 # Binutils
@@ -57,34 +57,35 @@ qemu := qemu-system-$(ARCH)
 qemu_args := -nographic -m 128M
 
 ifeq ($(ACCEL), on)
-  ifeq ($(shell uname), Darwin)
-    qemu_args += -cpu host -accel hvf
-  else
-    qemu_args += -cpu host -accel kvm
-  endif
+    ifeq ($(shell uname), Darwin)
+        qemu_args += -cpu host -accel hvf
+    else
+        qemu_args += -cpu host -accel kvm
+    endif
 endif
 
 ifeq ($(ARCH), x86_64)
-  qemu_args += \
-    -machine q35 \
-    -serial mon:stdio \
-    -kernel $(kernel_elf)
+    qemu_args += \
+        -machine q35 \
+        -serial mon:stdio \
+        -kernel $(kernel_elf)
 else ifeq ($(ARCH), aarch64)
-  qemu_args += \
-    -cpu cortex-a72 \
-    -machine virt \
-    -kernel $(kernel_bin)
+    qemu_args += \
+        -cpu cortex-a72 \
+        -machine virt \
+        -kernel $(kernel_bin)
 else ifeq ($(ARCH), riscv64)
-  qemu_args += \
-    -machine virt \
-    -bios default \
-    -kernel $(kernel_bin)
+    qemu_args += \
+        -machine virt \
+        -bios default \
+        -kernel $(kernel_bin)
 endif
 
 # GDB
 GDB := gdb-multiarch
 
 build: $(kernel_bin)
+	@cp $(kernel_bin) ../../build/riscv64/nimbos/
 
 env:
 	cargo install cargo-binutils --vers =0.3.3
