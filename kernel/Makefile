@@ -110,8 +110,7 @@ endif
 
 clean:
 	@cd ../user && make clean
-	@cargo clean
-    @rm -rf ../$(ARCH)-runtime/
+	@cargo clean && rm -rf ../$(ARCH)-runtime
 
 clippy:
 	cargo clippy $(build_args)
