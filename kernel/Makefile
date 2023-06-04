@@ -85,7 +85,7 @@ endif
 GDB := gdb-multiarch
 
 build: $(kernel_bin)
-	@cp $(kernel_bin) ../../build/riscv64/nimbos/
+	@cp $(kernel_bin) ../$(ARCH)-runtime/nimbos.bin
 
 env:
 	cargo install cargo-binutils --vers =0.3.3
@@ -111,6 +111,7 @@ endif
 clean:
 	@cd ../user && make clean
 	@cargo clean
+    @rm -rf ../$(ARCH)-runtime/
 
 clippy:
 	cargo clippy $(build_args)
