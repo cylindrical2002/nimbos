@@ -6,3 +6,5 @@ kernel/src/platform/config.rs
 .idea
 .vscode
 .DS_Store
+
+*-runtime/
